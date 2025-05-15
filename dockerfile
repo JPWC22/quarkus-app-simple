@@ -1,14 +1,17 @@
-# Use a base image with the JVM installed
-FROM eclipse-temurin:17-jre AS runtime
-
-# Set the working directory inside the container
+FROM eclipse-temurin:17-jre-alpine AS base
 WORKDIR /app
 
-# Copy the Quarkus application JAR file to the container
-COPY target/graalVm-quarkus-project-1.0.0-SNAPSHOT-runner.jar app.jar
+# Copy the built Quarkus JAR file
+COPY target/quarkus-app/lib/ /app/lib/
+COPY target/quarkus-app/*.jar /app/
+COPY target/quarkus-app/app/ /app/app/
+COPY target/quarkus-app/quarkus/ /app/quarkus/
 
-# Expose the port your application listens on (change as per your configuration)
+# Set JVM options (if needed)
+ENV JAVA_OPTS="-Djava.net.preferIPv4Stack=true"
+
+# Expose the required application port
 EXPOSE 8080
 
-# Run the application using the java command
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the Quarkus application
+CMD ["java", "-jar", "/app/quarkus-run.jar"]

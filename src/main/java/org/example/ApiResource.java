@@ -4,7 +4,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.jboss.logging.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class ApiResource {
 
-    private static final Logger LOG = Logger.getLogger(ApiResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ApiResource.class);
 
     // === Create a Message ===
     @POST
@@ -21,7 +22,7 @@ public class ApiResource {
     public Response saveMessage(Message message) {
         try {
             message.persist();  // Save object to the database
-            LOG.info("Saved message: " + message.message);
+            LOG.info("Saved message: {}", message.message);
             return Response.ok("{\"status\":\"success\"}").build();
         } catch (Exception e) {
             LOG.error("Error saving message", e);
